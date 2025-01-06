@@ -7,13 +7,13 @@ data class UserModel (
     var userId:String= "",
     var fullName:String="",
     var phoneNumber:String="",
-    var address:String=""
+    var address:String="",
 ): Parcelable{
     constructor(parcel: Parcel) : this(
         parcel.readString()?:"",
         parcel.readString()?:"",
         parcel.readString()?:"",
-        parcel.readString()?:""
+        parcel.readString()?:"",
     ) {
     }
 
