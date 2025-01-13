@@ -11,22 +11,24 @@ import com.example.firebaselearn.R
 import com.example.firebaselearn.databinding.ActivityRegisterBinding
 import com.example.firebaselearn.repository.UserRepositoryImpl
 import com.example.firebaselearn.ui.UserModel
-import com.example.firebaselearn.viewmidel.UserViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.example.firebaselearn.utils.LoadingUtils
+import com.example.firebaselearn.viewmodel.UserViewModel
 
 class RegisterActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivityRegisterBinding
+    private lateinit var binding: ActivityRegisterBinding
 
-    lateinit var userViewModel: UserViewModel
+    private lateinit var userViewModel: UserViewModel
+
+    private lateinit var loadingUtils: LoadingUtils
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding= ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        loadingUtils=LoadingUtils(this@RegisterActivity)
 
         val userRepository = UserRepositoryImpl()
         userViewModel=UserViewModel(userRepository)
@@ -37,6 +39,7 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         binding.submitButtonReg.setOnClickListener{
+            loadingUtils.show()
             val email :String =binding.editEmailReg.text.toString()
             val password :String=binding.passwordReg.text.toString()
             userViewModel.signup(email,password){
@@ -44,19 +47,17 @@ class RegisterActivity : AppCompatActivity() {
                 if (success){
                     val userModel=UserModel(
                         userid,
-                        binding.NameReg.toString(),
-                        binding.phoneReg.toString(),
-                        binding.addrReg.toString(),
+                        binding.NameReg.text.toString(),
+                        binding.phoneReg.text.toString(),
+                        binding.addrReg.text.toString(),
                     )
                     addUser(userModel)
-                }else{
-                    Toast.makeText(this@RegisterActivity,messege,Toast.LENGTH_SHORT).show()
-
+                }else {
+                    Toast.makeText(this@RegisterActivity, messege, Toast.LENGTH_SHORT).show()
+                    loadingUtils.dismiss()
                 }
 
-
             }
-
         }
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -76,6 +77,8 @@ class RegisterActivity : AppCompatActivity() {
                     this@RegisterActivity, message, Toast.LENGTH_SHORT
                 ).show()
             }
+            loadingUtils.dismiss()
+
         }
     }
 }

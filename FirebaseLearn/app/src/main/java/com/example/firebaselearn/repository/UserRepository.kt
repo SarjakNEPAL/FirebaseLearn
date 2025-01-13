@@ -10,4 +10,7 @@ interface UserRepository {
     fun forgetPassword(email:String,callback: (Boolean, String) -> Unit)
     fun addUserToDatabase(userID:String, userModel: UserModel, callback: (Boolean, String) -> Unit)
     fun getCurrentUser():FirebaseUser?
+    fun getDataFromDB(userID: String,callback: (UserModel?,Boolean, String) -> Unit)
+    fun logout(callback: (Boolean, String) -> Unit)
+    fun editProfile(userID: String,data:MutableMap<String,Any>,callback: (Boolean, String) -> Unit)  // <datatype,Any>
 }
